@@ -144,7 +144,7 @@ public class FXMLController {
 					txtResult.appendText("ERRORE: minuti non possono essere maggiori di 90 o minori di 1\n");
 					check = false;
 				}
-			}catch(NullPointerException npe) {
+			}catch(NumberFormatException nfe) {
 				txtResult.appendText("ERRORE: inserire un numero intero compreso tra 1 e 90\n");
 				check = false;
 			}			
