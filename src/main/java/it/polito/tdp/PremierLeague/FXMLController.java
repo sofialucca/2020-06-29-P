@@ -123,7 +123,7 @@ public class FXMLController {
     	this.cmbM1.setDisable(false);
     	this.cmbM2.setDisable(false);
     	this.cmbM1.getItems().setAll(vertici);
-    	this.cmbM1.getItems().setAll(vertici);
+    	this.cmbM2.getItems().setAll(vertici);
     	
     }
 
@@ -149,13 +149,46 @@ public class FXMLController {
 				check = false;
 			}			
 		}
-
+		
+		if(!this.btnCollegamento.isDisable()) {
+			Match m1 = this.cmbM1.getValue();
+			Match m2 = this.cmbM2.getValue();
+			if(m1 == null) {
+				txtResult.appendText("ERRORE: selezionare una partita per m1\n");
+				check = false;
+			}
+			if(m2 == null) {
+				txtResult.appendText("ERRORE: selezionare una partita per m2\n");
+				check = false;
+			}
+			if(m1 != null && m1.equals(m2)) {
+				txtResult.appendText("ERRORE: selezionare due partite diverse");
+				check = false;
+			}
+		}
 		return check;
 	}
 
 	@FXML
     void doCollegamento(ActionEvent event) {
+    	txtResult.clear();
     	
+    	if(!isValid()) {
+    		return;
+    	}
+    	
+    	Match m1 = this.cmbM1.getValue();
+    	Match m2 = this.cmbM2.getValue();
+    	List<Match> percorso = model.cercaPercorso(m1, m2);
+    	
+    	if(percorso.size() == 0) {
+    		txtResult.appendText("NON esiste un collegamento tra " + m1 + " e " + m2);
+    	}else {
+    		for(Match m : percorso) {
+    			txtResult.appendText(m.toString() +"\n");
+    		}
+    		txtResult.appendText("\n PESO = " + model.calcoloPeso(percorso));
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

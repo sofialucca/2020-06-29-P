@@ -18,6 +18,8 @@ public class Model {
 	private Map<Integer, Match> idMap;
 	private PremierLeagueDAO dao;
 	private List<Adiacenti> coppieMatch;
+	private List<Match> percorsoOttimo;
+	private int costoOttimo;
 	
 	public Model() {
 		dao = new PremierLeagueDAO();
@@ -56,6 +58,46 @@ public class Model {
 			}
 		}
 		return result;
+	}
+	
+	public List<Match> cercaPercorso(Match m1, Match m2){
+		percorsoOttimo = new ArrayList<>();
+		costoOttimo = 0;
+		List<Match> parziale = new ArrayList<>();
+		parziale.add(m1);
+		cerca(parziale,m1, m2);
+		return percorsoOttimo;
+	}
+
+	private void cerca(List<Match> parziale,Match partenza, Match destinazione) {
+		int pesoParziale = calcoloPeso(parziale);
+		if(partenza.equals(destinazione)) {
+			if(pesoParziale > costoOttimo) {
+				costoOttimo = pesoParziale;
+				percorsoOttimo = new ArrayList<>(parziale);
+			}
+			return;
+		}
+		
+		for(Match m: Graphs.neighborListOf(grafo, partenza)) {
+			if(!parziale.contains(m)) {
+				if((m.teamAwayID != partenza.teamAwayID || m.teamHomeID != partenza.teamHomeID) && (m.teamAwayID != partenza.teamHomeID || m.teamHomeID != partenza.teamAwayID)) {
+					parziale.add(m);
+					cerca(parziale, m, destinazione);
+					parziale.remove(m);
+				}
+			}
+		}
+		
+	}
+
+	public int calcoloPeso(List<Match> parziale) {
+		int costo = 0;
+		for (int i = 0;i<parziale.size()-1;i++) {
+			DefaultWeightedEdge e = grafo.getEdge(parziale.get(i), parziale.get(i+1));
+			costo += (int) grafo.getEdgeWeight(e);
+		}
+		return costo;
 	}
 	
 }

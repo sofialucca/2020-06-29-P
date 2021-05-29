@@ -47,6 +47,37 @@ public class Adiacenti implements Comparable<Adiacenti>{
 	public String toString() {
 		return m1 + " - " + m2 + " (" + peso + ")";
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((m1 == null) ? 0 : m1.hashCode());
+		result = prime * result + ((m2 == null) ? 0 : m2.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Adiacenti other = (Adiacenti) obj;
+		if (m1 == null) {
+			if (other.m1 != null)
+				return false;
+		} else if (!m1.equals(other.m1))
+			return false;
+		if (m2 == null) {
+			if (other.m2 != null)
+				return false;
+		} else if (!m2.equals(other.m2))
+			return false;
+		return true;
+	}
 	
 	
 }
